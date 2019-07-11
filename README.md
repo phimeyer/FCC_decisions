@@ -3,18 +3,8 @@ title: "Scraping Decision Texts from the German Federal Constitutional Court"
 author: "Philipp Meyer"
 date: "11/07/2019"
 output: 
-html_document: 
-  keep_md: yes
-  toc: yes
-pdf_document:
-  highlight: yes
-  toc: yes
-  number_sections: yes
+html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## Description
 
@@ -52,6 +42,7 @@ html  %>% html_nodes(".relevance100+a") %>% html_attr("href")
 ```{r}
 # select the court decisions' links
 decisions <- links[grep("^SharedDocs/Entscheidungen/",links)] %>% strsplit(";") %>% sapply("[", 1)
+
 # and saving the list for backup
 write.csv(decisions, file = "decisions.txt", row.names = FALSE)
 ```
@@ -60,6 +51,7 @@ write.csv(decisions, file = "decisions.txt", row.names = FALSE)
 # extract the filenames
 filenames <- decisions %>% strsplit("Entscheidungen/") %>% sapply("[", 2) %>% 
   strsplit("\\.") %>% sapply("[", 1)
+  
 # and saving the list for backup
 write.csv(filenames, file = "filenames.txt", row.names = FALSE)
 ```
@@ -75,6 +67,7 @@ filenames <- str_sub(filenames, start= -19)
 case <- read_html("http://www.bundesverfassungsgericht.de/SharedDocs/Entscheidungen/DE/2017/10/rk20171011_2bvr175817.html")
 casetext <- case %>% html_nodes("#wrapperContent") %>% html_text()
 cat(casetext, file="testing.txt", sep="", append=FALSE)
+
 # second getting all texts by using a for-loop
 for (i in 1:length(decisions)) {
   case <- read_html(paste("http://www.bundesverfassungsgericht.de/", decisions[i], sep = "", Sys.sleep(l)))
